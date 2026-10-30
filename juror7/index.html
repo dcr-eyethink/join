@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juror 7 — Jury Bundle</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1d1d1b;--muted:#6b675f;--paper:#f6f3ec;--line:#d9d3c5;--accent:#5a1f1f}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+       background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;padding:24px}
+  .card{max-width:520px;width:100%;background:#fffdf8;border:1px solid var(--line);
+        padding:40px 36px 32px;box-shadow:0 1px 0 #fff inset,0 8px 24px rgba(0,0,0,.05)}
+  .crest{font:600 11px/1 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
+  h1{font:600 30px/1.15 "Source Serif 4",Georgia,serif;margin:0 0 6px}
+  .sub{font:400 17px/1.4 "Source Serif 4",Georgia,serif;color:var(--muted);margin:0 0 26px}
+  p{font-size:15px;line-height:1.55;margin:0 0 14px}
+  button{margin-top:12px;width:100%;padding:15px 18px;font:500 16px Inter,sans-serif;color:#fff;
+         background:var(--accent);border:0;cursor:pointer}
+  button:hover{background:#6e2828}
+  button:disabled{background:#a99;cursor:default}
+  .status{min-height:20px;margin-top:14px;font-size:14px;color:var(--muted)}
+  .fallback{display:none;margin-top:10px;font-size:14px}
+  .fallback a{color:var(--accent)}
+  .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="card">
+  <p class="crest">Crown Court at Ashcombe</p>
+  <h1>Jury Bundle</h1>
+  <p class="sub">Issued to Juror 7</p>
+  <p>You have been sworn in as Juror 7. The bundle contains the agreed facts, the evidence and the judge's directions.</p>
+  <p>Read it carefully before you reach your verdict, and don't discuss your bundle with other jurors until you are asked to.</p>
+  <button id="get" type="button">Download my bundle (PDF)</button>
+  <div class="status" id="status"></div>
+  <div class="fallback" id="fallback">If the download doesn't start, <a id="direct" href="#">open your bundle here</a>.</div>
+  <p class="foot">Fictional teaching material. All persons, places and institutions are invented.</p>
+</main>
+<script>
+  // Each visitor is given one of the two bundles at random; the choice is remembered in their browser.
+  const BUNDLES = ["b1.pdf", "b2.pdf"];
+  const FILENAME = "Jury_Bundle_Juror_7.pdf";
+  const KEY = "juror7-bundle";
+  function pick(){
+    let i = null;
+    try { const s = localStorage.getItem(KEY); if (s === "0" || s === "1") i = +s; } catch(e){}
+    if (i === null){
+      const r = new Uint32Array(1); crypto.getRandomValues(r); i = r[0] % 2;
+      try { localStorage.setItem(KEY, String(i)); } catch(e){}
+    }
+    return BUNDLES[i];
+  }
+  const url = pick();
+  const btn = document.getElementById("get");
+  const direct = document.getElementById("direct");
+  direct.href = url;
+  document.getElementById("fallback").style.display = "block";
+  btn.addEventListener("click", () => {
+    const a = document.createElement("a");
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    document.getElementById("status").textContent = "Your bundle is downloading.";
+  });
+</script>
+</body>
+</html>
