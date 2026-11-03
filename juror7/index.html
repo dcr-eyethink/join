@@ -59,7 +59,19 @@
   const direct = document.getElementById("direct");
   direct.href = url;
   document.getElementById("fallback").style.display = "block";
+  // Anonymous download counter: records only the time and which bundle was given.
+  const LOG_URL = "https://blktopjretjnypwjifmk.supabase.co/rest/v1/rpc/log_juror7_download";
+  const LOG_KEY = "sb_publishable_ammeWYJVwOHACb5RZOngjA_oF5ORiab";
+  function logDownload(){
+    try {
+      fetch(LOG_URL, {method:"POST", keepalive:true,
+        headers:{"apikey":LOG_KEY, "Content-Type":"application/json"},
+        body: JSON.stringify({b: url === "b1.pdf" ? "Ellison" : "Harrison"})}).catch(()=>{});
+    } catch(e){}
+  }
+  direct.addEventListener("click", logDownload);
   btn.addEventListener("click", () => {
+    logDownload();
     const a = document.createElement("a");
     a.href = url; a.download = FILENAME;
     document.body.appendChild(a); a.click(); a.remove();
